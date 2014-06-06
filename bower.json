@@ -1,0 +1,20 @@
+{
+  "name": "Countach",
+  "version": "0.0.0",
+  "homepage": "https://github.com/Kindergarten/Countach",
+  "authors": [
+    "Adam Poczatek (@ad4z)"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "build_tasks",
+    "demo",
+    "package.json",
+    "Gruntfile.js"
+  ]
+}

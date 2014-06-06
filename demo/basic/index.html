@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div ng-controller="test">
+        <h1>Hello World!</h1>
+        <button ng-click="testing('hi')">Say Hi!</button>
+    </div>
+    <script src="../libs/angular/angular.js"></script>
+    <script src="../infinite-grid/infinite-grid.js"></script>
+    <script>
+        (function () {
+            angular.module("app", ["infiniteGrid"])
+                .controller("test", function ($scope, exampleService) {
+                    $scope.testing = exampleService.log;
+                });
+        })();
+    </script>
+</body>
+</html>
