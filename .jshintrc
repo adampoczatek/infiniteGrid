@@ -111,9 +111,10 @@
 
     "maxerr"        : 100,      // Maximum errors before stopping.
     "predef"        : [         // Extra globals.
-        //"exampleVar",
-        //"anotherCoolGlobal",
-        //"iLoveDouglas"
+        "window",
+        "angular",
+        "require",
+        "module"
     ],
     "indent"        : 4         // Specify indentation spacing
 }

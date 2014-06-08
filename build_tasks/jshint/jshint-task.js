@@ -1,11 +1,14 @@
 var jshint;
 
 jshint = {
-    jshintrc: true,
-    src: [
-        "./src/**/*.js",
-        "./demo/**/*.js"
-    ]
+    options: {
+        jshintrc: true
+    },
+    main: {
+        src: [
+            "<%= pkg.name %>.js"
+        ]
+    }
 };
 
 module.exports = jshint;

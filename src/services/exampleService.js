@@ -1,8 +1,16 @@
-infiniteGridServices
-    .service("exampleService", ["$templateCache", function ($templateCache) {
+(function () {
+    "use strict";
+
+    var exampleService;
+
+    exampleService = function (scope) {
         return {
             log: function (msg) {
-                alert($templateCache.get("example.html"));
+                window.alert(msg);
             }
-        }
-    }]);
+        };
+    };
+
+    angular.module("infiniteGrid")
+        .service("exampleService", ["$scope", exampleService]);
+})();

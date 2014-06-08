@@ -3,7 +3,7 @@ var connect;
 connect = {
     demo: {
         options: {
-            port: 8081,
+            port: 8089,
             base: "./demo",
             keepalive: true
         }

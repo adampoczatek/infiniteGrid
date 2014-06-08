@@ -32,6 +32,6 @@
     "grunt-karma": "~0.8.3",
     "grunt-jsdoc": "~0.5.4",
     "matchdep": "~0.3.0",
-    "grunt-angular-templates": "~0.5.5"
+    "grunt-html2js": "~0.2.7"
   }
 }
