@@ -1,5 +1,5 @@
 {
-  "name": "Countach",
+  "name": "infinite-grid",
   "version": "0.0.0",
   "homepage": "https://github.com/Kindergarten/Countach",
   "authors": [
@@ -15,6 +15,13 @@
     "build_tasks",
     "demo",
     "package.json",
-    "Gruntfile.js"
-  ]
+    "Gruntfile.js",
+    "demo/libs"
+  ],
+  "devDependencies": {
+    "angular": "~1.2.17"
+  },
+  "description": "Infinie Grid",
+  "main": "\"/src/infinite-grid-*.js\"",
+  "private": true
 }
