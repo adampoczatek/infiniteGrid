@@ -3,14 +3,16 @@
 
     var exampleService;
 
-    exampleService = function (scope) {
+    exampleService = function () {
         return {
             log: function (msg) {
-                window.alert(msg);
+                window.console.log(msg);
+
+                return msg;
             }
         };
     };
 
     angular.module("infiniteGrid")
-        .service("exampleService", ["$scope", exampleService]);
+        .service("exampleService", [exampleService]);
 })();

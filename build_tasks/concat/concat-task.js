@@ -5,14 +5,30 @@ concat = {
         separator: "\n\n"
     },
 
-    dev: {
-        src: ["<%= srcFiles %>"],
-        dest: "./src/<%= pkg.name %>.js"
+    templates: {
+        options: {
+            banner:
+                "(function() {\n" +
+                "    \"use strict\";\n\n",
+            footer:
+                "})();"
+        },
+        src: ["./src/templates/templates.js"],
+        dest: "./src/templates/templates.js"
     },
 
-    demo: {
+    dev: {
+        options: {
+            banner:
+                "/**\n" +
+                " * <%= pkg.name %> - <%= pkg.version %>\n" +
+                " * Last updated: <%= grunt.template.today('dd-mm-yyyy') %>\n" +
+                " * @summary <%= pkg.description %>\n" +
+                " * @author <%= pkg.author %>\n" +
+                " */\n\n"
+        },
         src: ["<%= srcFiles %>"],
-        dest: "./demo/infinite-grid/<%= pkg.name %>.js"
+        dest: "./src/<%= pkg.name %>-<%= pkg.version %>.js"
     }
 };
 

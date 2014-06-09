@@ -1,5 +1,7 @@
 module.exports = function (grunt) {
-    var matchdep =  require("matchdep");
+    var matchdep;
+
+    matchdep = require("matchdep");
 
     matchdep.filterDev("grunt-*").forEach(grunt.loadNpmTasks);
 
@@ -12,19 +14,29 @@ module.exports = function (grunt) {
             "./src/directives/*.js",
             "./src/templates/*.js"
         ],
-        templates: [
-            "./src/templates/*.html"
-        ],
 
         clean:   require("./build_tasks/clean/task.js"),
         concat:  require("./build_tasks/concat/concat-task.js"),
         connect: require("./build_tasks/connect/connect-task.js"),
+        copy:    require("./build_tasks/copy/copy-task.js"),
         html2js: require("./build_tasks/html2js/html2js-task.js"),
-        jsdoc:   require("./build_tasks/jsdoc/task.js"),
+        indent:  require("./build_tasks/indent/indent-task.js"),
+        jsdoc:   require("./build_tasks/jsdoc/jsdoc-task.js"),
         jshint:  require("./build_tasks/jshint/jshint-task.js"),
-        karma:   require("./build_tasks/karma/task.js"),
-        watch:   require("./build_tasks/watch/task.js")
+        uglify:  require("./build_tasks/uglify/uglify-task.js"),
+        watch:   require("./build_tasks/watch/watch-task.js")
     });
 
-    grunt.registerTask("start", ["connect"]);
+    grunt.registerTask("start", ["connect", "watch"]);
+
+    grunt.registerTask("compile-templates", ["html2js", "indent", "concat:templates"]);
+
+    grunt.registerTask("build", [
+        "compile-templates",
+        "concat:dev",
+        "jshint",
+        "uglify",
+        "copy",
+        "jsdoc"
+    ]);
 };

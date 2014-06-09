@@ -6,7 +6,9 @@ jshint = {
     },
     main: {
         src: [
-            "<%= pkg.name %>.js"
+            "./src/**/*.js",
+            "!./src/<%= pkg.name %>-<%= pkg.version %>.js",
+            "!./src/<%= pkg.name %>-<%= pkg.version %>.min.js"
         ]
     }
 };

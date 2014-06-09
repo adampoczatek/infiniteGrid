@@ -5,11 +5,7 @@ html2js = {
         module: "infiniteGrid.Templates",
         singleModule: true,
         indentString: "    ",
-        fileHeaderString:
-            "(function () {\n" +
-            "    \"use strict\";\n",
-        fileFooterString:
-            "\n})();"
+        quoteChar: "\""
     },
     main: {
         src: ["./src/templates/**/*.html"],
