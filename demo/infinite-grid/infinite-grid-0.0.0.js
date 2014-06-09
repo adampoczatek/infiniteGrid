@@ -1,6 +1,6 @@
 /**
  * infinite-grid - 0.0.0
- * Last updated: 09-06-2014
+ * Last updated: 10-06-2014
  * @summary Infinite Grid
  * @author Adam Poczatek (@ad4z)
  */
@@ -50,13 +50,56 @@
         .service("exampleService", [exampleService]);
 })();
 
+(function () {
+    "use strict";
+
+    var infiniteGrid;
+
+    /**
+     * Main table directive.
+     * @namespace infiniteGrid.Components.infiniteGrid
+     */
+
+    infiniteGrid = function (templateCache) {
+        var linkFunction;
+
+        /**
+         * Angular link function.
+         * @private
+         */
+        linkFunction = function (scope, elem, attr) {
+
+        };
+
+        return {
+            scope: {
+                data: "="
+            },
+            link: linkFunction,
+            restrict: "A",
+            template: templateCache.get("templates/grid.tpl.html")
+        };
+    };
+
+    angular.module("infiniteGrid")
+        .directive("infiniteGrid", ["$templateCache", infiniteGrid]);
+})();
+
 (function() {
     "use strict";
 
     angular.module('infiniteGrid.Templates', []).run(['$templateCache', function($templateCache) {
-        $templateCache.put("templates/example.html",
-            "<h1>Heey</h1>");
-        $templateCache.put("templates/example2.html",
-            "<h1>Heey 2</h1>");
+        $templateCache.put("templates/grid.tpl.html",
+            "<ul class=\"infinite-grid\">\n" +
+            "    <li class=\"infinite-grid__row\"\n" +
+            "        ng-repeat=\"row in data\">\n" +
+            "\n" +
+            "        <div class=\"infinite-grid__column\"\n" +
+            "             ng-repeat=\"column in row\">\n" +
+            "\n" +
+            "            {{column.data}}\n" +
+            "        </div>\n" +
+            "    </li>\n" +
+            "</ul>");
     }]);
 })();

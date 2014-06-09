@@ -4,18 +4,51 @@
     <meta charset="UTF-8">
     <title></title>
 </head>
-<body>
-    <div ng-controller="test">
-        <h1>Hello World!</h1>
-        <button ng-click="testing('hi')">Say Hi!</button>
-    </div>
+<body ng-controller="main">
+    <div infinite-grid data="data"></div>
+
     <script src="../libs/angular/angular.js"></script>
     <script src="../infinite-grid/infinite-grid-0.0.0.js"></script>
     <script>
         (function () {
             angular.module("app", ["infiniteGrid"])
-                .controller("test", function ($scope, exampleService) {
-                    $scope.testing = exampleService.log;
+                .controller("main", function ($scope, exampleService) {
+                    $scope.data = {
+                        1: {
+                            1: {
+                                data: "test 1"
+                            },
+                            2: {
+                                data: "test 2"
+                            },
+                            3: {
+                                data: "test 3"
+                            },
+                            4: {
+                                data: "test 4"
+                            },
+                            5: {
+                                data: "test 5"
+                            }
+                        },
+                        2: {
+                            1: {
+                                data: "test 1"
+                            },
+                            2: {
+                                data: "test 2"
+                            },
+                            3: {
+                                data: "test 3"
+                            },
+                            4: {
+                                data: "test 4"
+                            },
+                            5: {
+                                data: "test 5"
+                            }
+                        }
+                    }
                 });
         })();
     </script>
