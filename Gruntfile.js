@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
         srcFiles: [
-            "./src/base.js",
+            "./src/base/base.js",
             "./src/filters/*.js",
             "./src/services/*.js",
             "./src/directives/*.js",

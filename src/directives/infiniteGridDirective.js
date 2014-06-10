@@ -7,28 +7,48 @@
      * Main table directive.
      * @namespace infiniteGrid.Components.infiniteGrid
      */
-
-    infiniteGrid = function (templateCache) {
-        var linkFunction;
+    infiniteGrid = function (templateCache, utilsService, memoryService) {
+        var _linkFunction;
 
         /**
          * Angular link function.
          * @private
          */
-        linkFunction = function (scope, elem, attr) {
+        _linkFunction = function (scope, element, attr) {
+            var _MEMORY;
 
+            scope.$watch(function() {
+                return [scope.totalColumns, scope.totalRows];
+            }, function (newVal, oldVal) {
+
+                scope.data = utilsService.setupDataSetObj(scope.columns, scope.rows);
+            });
+
+            scope.initialise = function (totalColumns, totalRows) {
+                _MEMORY = utilsService.setupDataSetObj(totalColumns, totalRows);
+
+
+            };
+
+            scope.memory = _MEMORY;
+
+            scope.data = utilsService.setupDataSetObj(scope.columns, scope.rows);
         };
 
         return {
+            link: _linkFunction,
+            restrict: "AE",
             scope: {
-                data: "="
+                data: "=",
+                rows: "=",
+                totalRows: "",
+                columns: "=",
+                totalColumns: "="
             },
-            link: linkFunction,
-            restrict: "A",
             template: templateCache.get("templates/grid.tpl.html")
         };
     };
 
     angular.module("infiniteGrid")
-        .directive("infiniteGrid", ["$templateCache", infiniteGrid]);
+        .directive("infiniteGrid", ["$templateCache", "utilsService", "memoryService", infiniteGrid]);
 })();

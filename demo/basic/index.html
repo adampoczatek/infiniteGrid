@@ -3,53 +3,63 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title></title>
+    <style>
+        .infinite-grid {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: table;
+            list-style: none;
+
+            border-collapse: collapse;
+        }
+
+        .infinite-grid__row {
+            display: table-row;
+        }
+
+        .infinite-grid__row--freeze {
+            background: rgba(0, 0, 0, .05);
+        }
+
+        .infinite-grid__column {
+            border: 1px solid #ccc;
+            display: table-cell;
+            padding: 10px;
+        }
+        
+        .infinite-grid__column--freeze {
+            background: rgba(0, 0, 0, .05);
+        }
+    </style>
 </head>
 <body ng-controller="main">
-    <div infinite-grid data="data"></div>
+    <infinite-grid
+         columns="10"
+         totalColumns="totalColumns"
+         rows="5"
+         totalRows="totalRows"
+         data="data">
+    </infinite-grid>
 
     <script src="../libs/angular/angular.js"></script>
     <script src="../infinite-grid/infinite-grid-0.0.0.js"></script>
     <script>
         (function () {
             angular.module("app", ["infiniteGrid"])
-                .controller("main", function ($scope, exampleService) {
-                    $scope.data = {
-                        1: {
-                            1: {
-                                data: "test 1"
-                            },
-                            2: {
-                                data: "test 2"
-                            },
-                            3: {
-                                data: "test 3"
-                            },
-                            4: {
-                                data: "test 4"
-                            },
-                            5: {
-                                data: "test 5"
-                            }
-                        },
-                        2: {
-                            1: {
-                                data: "test 1"
-                            },
-                            2: {
-                                data: "test 2"
-                            },
-                            3: {
-                                data: "test 3"
-                            },
-                            4: {
-                                data: "test 4"
-                            },
-                            5: {
-                                data: "test 5"
-                            }
-                        }
+                .controller("main",
+                    function ($scope) {
+
+                        setTimeout(function () {
+                            $scope.totalColumns = 190;
+
+                            $scope.totalRows = 600;
+
+                            $scope.$apply();
+
+                        }, 2000);
                     }
-                });
+                );
         })();
     </script>
 </body>

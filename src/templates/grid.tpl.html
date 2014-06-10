@@ -1,11 +1,13 @@
 <ul class="infinite-grid">
     <li class="infinite-grid__row"
+        ng-class="{ 'infinite-grid__row--freeze': row.freeze }"
         ng-repeat="row in data">
 
         <div class="infinite-grid__column"
-             ng-repeat="column in row">
+             ng-class="{ 'infinite-grid__column--freeze': column.freeze }"
+             ng-repeat="column in row.columns">
 
-            {{column.data}}
+            {{column.value}}
         </div>
     </li>
 </ul>
