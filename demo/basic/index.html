@@ -36,29 +36,31 @@
 <body ng-controller="main">
     <infinite-grid
          columns="10"
-         totalColumns="totalColumns"
-         rows="5"
-         totalRows="totalRows">
+         total-columns="totalColumns"
+         rows="10"
+         total-rows="totalRows">
     </infinite-grid>
 
     <script src="../libs/angular/angular.js"></script>
     <script src="../infinite-grid/infinite-grid-0.0.0.js"></script>
     <script>
         (function () {
+            "use strict";
+
+            var mainCtrl;
+
+            mainCtrl = function (scope, http) {
+                http
+                    .get("/fake-data/analysis-defaults.json")
+                    .success(function (result) {
+                        scope.totalColumns = result.columns;
+
+                        scope.totalRows = result.rows;
+                    });
+            };
+
             angular.module("app", ["infiniteGrid"])
-                .controller("main",
-                    function ($scope) {
-
-                        setTimeout(function () {
-                            $scope.totalColumns = 190;
-
-                            $scope.totalRows = 600;
-
-                            $scope.$apply();
-
-                        }, 2000);
-                    }
-                );
+                .controller("main", ["$scope", "$http", mainCtrl]);
         })();
     </script>
 </body>
