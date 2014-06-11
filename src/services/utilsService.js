@@ -18,35 +18,42 @@
         };
 
         /**
-         * Creates
+         * Creates columns object.
          *
-         * @param {Number} rows - Number of rows in the grid.
+         * @method _setupColumns
          * @param {Number} columns - Number of columns in the grid.
-         * @returns {{}}
+         * @returns {Object}
          * @private
          */
-        _setupColumns = function (columns) {
+        _setupColumns = function (columns, columnValue) {
             var i, l, obj;
 
             obj = {};
 
             for (i = 0, l = columns; i < l; i++) {
-                obj[i] = {
-                    data: null
-                };
+                obj[i] = columnValue;
             }
 
             return obj;
         };
 
-        _setupRows = function (rows, rowTemplate) {
+        /**
+         * Sets up rows object.
+         *
+         * @method _setupRows
+         * @param {Number} numberOfRows - Number of rows.
+         * @param {*} columnsTemplate - Columns template.
+         * @returns {Object}
+         * @private
+         */
+        _setupRows = function (numberOfRows, columnsTemplate) {
             var obj, i, l;
 
             obj = {};
 
-            for (i = 0, l = rows; i < l; i++) {
+            for (i = 0, l = numberOfRows; i < l; i++) {
                 obj[i] = {
-                    columns: _cloneObj(rowTemplate)
+                    columns: _cloneObj(columnsTemplate)
                 };
             }
 
@@ -59,7 +66,7 @@
              * Sets ups data set object.
              *
              * @method setupDataSetObj
-             * @memberOf infiniteGrid.Services.gridService
+             * @namespace infiniteGrid.Services.utilsService
              * @param {Number} columns - Number of columns in the grid.
              * @param {Number} rows - Number of rows in the grid.
              * @returns {Object} - Returns template object.
@@ -68,7 +75,9 @@
                 var _ROW,
                     _DATA_SET;
 
-                _ROW = _setupColumns(columns);
+                _ROW = _setupColumns(columns, {
+                    value: null
+                });
 
                 _DATA_SET = _setupRows(rows, _ROW);
 
@@ -85,6 +94,22 @@
              */
             cloneObject: function (obj) {
                 return _cloneObj(obj);
+            },
+
+            /**
+             * Little wrapper around `for in` loop.
+             *
+             * @param {Object} data - Object to loop through.
+             * @param {Function} callback - Function executed on every property.
+             */
+            loopObj: function (data, callback) {
+                var key;
+
+                for (key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        callback.call(data, data[key], key);
+                    }
+                }
             }
         };
     };

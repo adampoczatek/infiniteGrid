@@ -1,4 +1,4 @@
-describe("Utilities Service", function () {
+describe("utilitiesService.cloneObject", function () {
     beforeEach(module("infiniteGrid"));
 
     it("should create copy of an object", inject(function (utilsService) {
@@ -15,6 +15,10 @@ describe("Utilities Service", function () {
 
         expect(cloned.key === "value").toBe(true);
     }));
+});
+
+describe("utilitiesService.setupDataSetObj`", function () {
+    beforeEach(module("infiniteGrid"));
 
     it("should have the right amount of rows", inject(function (utilsService) {
         var setup, rows;
