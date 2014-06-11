@@ -17,9 +17,7 @@
         _linkFunction = function (scope, element, attr) {
             var _MEMORY;
 
-            scope.$watch(function() {
-                return [scope.totalColumns, scope.totalRows];
-            }, function (newVal, oldVal) {
+            scope.$watch("columns", function (newVal, oldVal) {
 
                 scope.data = utilsService.setupDataSetObj(scope.columns, scope.rows);
             });
@@ -39,9 +37,8 @@
             link: _linkFunction,
             restrict: "AE",
             scope: {
-                data: "=",
                 rows: "=",
-                totalRows: "",
+                totalRows: "=",
                 columns: "=",
                 totalColumns: "="
             },
