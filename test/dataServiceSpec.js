@@ -97,3 +97,84 @@ describe("dataService.queryLocalData", function () {
         console.log(missingData);
     }));
 });
+
+describe("dataService.mergeData", function () {
+    beforeEach(module("infiniteGrid"));
+
+    it("should merge data", inject(function (dataService) {
+        var cachedData, serverData, result;
+
+        serverData = {
+            "0": {
+                "0": {
+                    "value": "Item 1"
+                },
+                "1": {
+                    "value": "Item 2"
+                },
+                "2": {
+                    "value": "Item 3"
+                },
+                "3": {
+                    "value": "Item 4"
+                }
+            },
+            "3": {
+                "4": {
+                    "value": "Item 5"
+                },
+                "5": {
+                    "value": "Item 6"
+                },
+                "6": {
+                    "value": "Item 7"
+                },
+                "7": {
+                    "value": "Item 8"
+                },
+                "8": {
+                    "value": "Item 9"
+                },
+                "9": {
+                    "value": "Item 10"
+                }
+            }
+        };
+
+        cachedData = {
+            "0": {
+                columns: {
+                    "4": {
+                        value: "Cached item 5"
+                    }
+                }
+            },
+
+            "3": {
+                columns: {
+                    "1": {
+                        value: "Cached item 2"
+                    }
+                }
+            }
+        };
+
+
+        result = dataService.mergeData(cachedData, serverData);
+
+        console.log(result);
+
+        expect(result[0].columns[0].value).toBe("Item 1");
+        expect(result[0].columns[1].value).toBe("Item 2");
+        expect(result[0].columns[2].value).toBe("Item 3");
+        expect(result[0].columns[3].value).toBe("Item 4");
+        expect(result[0].columns[4].value).toBe("Cached item 5");
+        expect(result[3].columns[1].value).toBe("Cached item 2");
+        expect(result[3].columns[4].value).toBe("Item 5");
+        expect(result[3].columns[5].value).toBe("Item 6");
+        expect(result[3].columns[6].value).toBe("Item 7");
+        expect(result[3].columns[7].value).toBe("Item 8");
+        expect(result[3].columns[8].value).toBe("Item 9");
+        expect(result[3].columns[9].value).toBe("Item 10");
+    }));
+});

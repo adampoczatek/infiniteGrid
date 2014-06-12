@@ -7,7 +7,7 @@
      * Main table directive.
      * @namespace infiniteGrid.Components.infiniteGrid
      */
-    infiniteGrid = function (templateCache, utilsService, dataService) {
+    infiniteGrid = function (http, templateCache, utilsService, dataService) {
         var _linkFunction;
 
         /**
@@ -17,51 +17,8 @@
          */
         _linkFunction = function (scope, element, attr) {
             var _MEMORY,
-                _DATA_OBJ,
+                _SETTINGS,
                 _validateSettings;
-
-
-            var test = dataService.queryLocalData(1, 1, 2, 2, {
-                0: {
-                    columns: {
-                        0: {
-                            value: "James"
-                        },
-                        1: {
-                            value: null
-                        },
-                        2: {
-                            value: null
-                        }
-                    }
-                },
-                1: {
-                    columns: {
-                        0: {
-                            value: "Bruce"
-                        },
-                        1: {
-                            value: null
-                        },
-                        2: {
-                            value: "Chris"
-                        }
-                    }
-                },
-                2: {
-                    columns: {
-                        0: {
-                            value: "Daniel"
-                        },
-                        1: {
-                            value: "Stuart"
-                        },
-                        2: {
-                            value: null
-                        }
-                    }
-                }
-            });
 
             /**
              * ##################################################
@@ -71,7 +28,7 @@
 
             _MEMORY = {};
 
-            _DATA_OBJ = {};
+            _SETTINGS = {};
 
             /**
              * Validate grid settings.
@@ -118,13 +75,50 @@
                     scope.data = utilsService.setupDataSetObj(scope.columns, scope.rows);
 
                     scope.initialised = true;
+
+                    scope.getData(0, 0, scope.columns, scope.rows);
                 }
             };
 
-            scope.getData = function () {
+            scope.getData = function (columnIndex, rowIndex) {
+                var _query;
 
+                _SETTINGS = {
+                    columnIndex: columnIndex,
+                    rowIndex: rowIndex
+                };
+
+                _query = dataService.queryLocalData(columnIndex, rowIndex, scope.columns, scope.rows, _MEMORY);
+
+                scope.data = _query.cached;
+
+                if (_query.empty.length) {
+                    http
+                        .get("/fake-data/data.json")
+                        .success(function (result) {
+                            _MEMORY = dataService.mergeData(_MEMORY, result);
+
+                            scope.getData(columnIndex, rowIndex);
+                        });
+                }
             };
 
+
+            scope.showNextRow = function () {
+                scope.getData(_SETTINGS.columnIndex, _SETTINGS.rowIndex + 1, scope.totalColumns);
+            };
+
+            scope.showPrevRow = function () {
+                scope.getData(_SETTINGS.columnIndex, _SETTINGS.rowIndex - 1, scope.totalColumns);
+            };
+
+            scope.showNextColumn = function () {
+                scope.getData(_SETTINGS.columnIndex + 1, _SETTINGS.rowIndex);
+            };
+
+            scope.showPrevColumn = function () {
+                scope.getData(_SETTINGS.columnIndex - 1, _SETTINGS.rowIndex);
+            };
 
             /**
              * ##################################################
@@ -164,5 +158,5 @@
     };
 
     angular.module("infiniteGrid")
-        .directive("infiniteGrid", ["$templateCache", "utilsService", "dataService", infiniteGrid]);
+        .directive("infiniteGrid", ["$http", "$templateCache", "utilsService", "dataService", infiniteGrid]);
 })();

@@ -63,10 +63,36 @@
         return {
 
             /**
+             * Creates generic row object.
+             *
+             * @method createRowObj
+             * @memberOf infiniteGrid.Services.utilsService
+             * @returns {Object}
+             */
+            createRowObj: function () {
+                return {
+                    columns: {}
+                };
+            },
+
+            /**
+             * Creates generic column object.
+             *
+             * @method createColumnObj
+             * @memberOf infiniteGrid.Services.utilsService
+             * @returns {Object}
+             */
+            createColumnObj: function () {
+                return {
+                    value: null
+                };
+            },
+
+            /**
              * Sets ups data set object.
              *
              * @method setupDataSetObj
-             * @namespace infiniteGrid.Services.utilsService
+             * @memberOf infiniteGrid.Services.utilsService
              * @param {Number} columns - Number of columns in the grid.
              * @param {Number} rows - Number of rows in the grid.
              * @returns {Object} - Returns template object.

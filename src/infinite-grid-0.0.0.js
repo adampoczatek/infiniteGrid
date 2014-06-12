@@ -1,6 +1,6 @@
 /**
  * infinite-grid - 0.0.0
- * Last updated: 11-06-2014
+ * Last updated: 12-06-2014
  * @summary Infinite Grid
  * @author Adam Poczatek (@ad4z)
  */
@@ -83,7 +83,7 @@
         }
     };
 
-    dataService = function (utilsService) {
+    dataService = function (http, utilsService) {
         return {
 
             /**
@@ -134,6 +134,8 @@
             /**
              * Queries data from locally stored object.
              *
+             * @method queryLocalData
+             * @memberOf infiniteGrid.Services.dataService
              * @param {Number} startColumn - First column index.
              * @param {Number} startRow - First row index.
              * @param {Number} columnsCount - Amount of columns to be queried.
@@ -141,48 +143,96 @@
              * @param {Object} dataSet - Local data object.
              */
             queryLocalData: function (startColumn, startRow, columnsCount, rowsCount, dataSet) {
-                var result, rowIndex, rows, cachedRow, cachedCell, columnIndex, columns, emptyCell;
+                var _result,
+                    _rowIndex,
+                    _rowCached,
+                    _rowCachedIndex,
+                    _columnIndex,
+                    _columnCached,
+                    _columnCachedIndex,
+                    _emptyColumn;
 
-                result = {
+                // Result object containing cached data and an array of empty cells.
+                _result = {
                     cached: {},
                     empty: []
                 };
 
-                // Loop through cached rows.
-                for (rowIndex = 0, rows = rowsCount; rowIndex < rows; rowIndex++) {
-                    cachedRow = dataSet[startRow + rowIndex];
 
-                    result.cached[rowIndex] = { columns: {} };
+                // Loop through cached rows.
+                for (_rowIndex = 0; _rowIndex < rowsCount; _rowIndex++) {
+
+                    _rowCachedIndex = _rowIndex + startRow;
+
+                    _rowCached = dataSet[_rowCachedIndex];
+
+                    // Create empty row object.
+                    _result.cached[_rowIndex] = utilsService.createRowObj();
 
                     // Loop through cached columns.
-                    for (columnIndex = 0, columns = columnsCount; columnIndex < columns; columnIndex++) {
-                        cachedCell =
-                            cachedRow &&
-                            cachedRow.columns[startColumn + columnIndex];
+                    for (_columnIndex = 0; _columnIndex < columnsCount; _columnIndex++) {
 
-                        if (!cachedCell || !cachedCell.value) {
-                            cachedCell = {
-                                value: null
-                            };
+                        _columnCachedIndex = _columnIndex + startColumn;
 
-                            emptyCell = {};
+                        _columnCached =
+                            _rowCached &&
+                            _rowCached.columns &&
+                            _rowCached.columns[_columnCachedIndex];
 
-                            emptyCell[startRow + rowIndex] = startColumn + columnIndex;
+                        if (!_columnCached || !_columnCached.value) {
 
-                            result.empty.push(emptyCell);
+                            _columnCached = utilsService.createColumnObj();
+
+                            _emptyColumn = {};
+
+                            _emptyColumn[_rowCachedIndex] = _columnCachedIndex;
+
+                            _result.empty.push(_emptyColumn);
                         }
 
-                        result.cached[rowIndex].columns[columnIndex] = cachedCell;
+                        _result.cached[_rowIndex].columns[_columnIndex] = _columnCached;
                     }
                 }
 
-                return result;
+                return _result;
+            },
+
+            /**
+             * Merges new data with cached data.
+             *
+             * @method mergeData
+             * @memberOf infiniteGrid.Services.dataService
+             * @param {Object} cachedData
+             * @param {Object} newData
+             */
+            mergeData: function (cachedData, newData) {
+                var _cachedRow, _cachedColumn;
+
+                utilsService.loopObj(newData, function (item, key) {
+                    _cachedRow = cachedData[key];
+
+                    if (!_cachedRow) {
+                        _cachedRow = cachedData[key] = utilsService.createRowObj();
+                    }
+
+                    utilsService.loopObj(item, function (item, key) {
+                        _cachedColumn = _cachedRow.columns[key];
+
+                        if (!_cachedColumn) {
+                            _cachedColumn = _cachedRow.columns[key] = utilsService.createColumnObj();
+                        }
+
+                        _cachedColumn.value = item.value;
+                    });
+                });
+
+                return cachedData;
             }
         };
     };
 
     angular.module("infiniteGrid")
-        .service("dataService", ["utilsService", dataService]);
+        .service("dataService", ["$http", "utilsService", dataService]);
 })();
 
 (function () {
@@ -250,10 +300,36 @@
         return {
 
             /**
+             * Creates generic row object.
+             *
+             * @method createRowObj
+             * @memberOf infiniteGrid.Services.utilsService
+             * @returns {Object}
+             */
+            createRowObj: function () {
+                return {
+                    columns: {}
+                };
+            },
+
+            /**
+             * Creates generic column object.
+             *
+             * @method createColumnObj
+             * @memberOf infiniteGrid.Services.utilsService
+             * @returns {Object}
+             */
+            createColumnObj: function () {
+                return {
+                    value: null
+                };
+            },
+
+            /**
              * Sets ups data set object.
              *
              * @method setupDataSetObj
-             * @namespace infiniteGrid.Services.utilsService
+             * @memberOf infiniteGrid.Services.utilsService
              * @param {Number} columns - Number of columns in the grid.
              * @param {Number} rows - Number of rows in the grid.
              * @returns {Object} - Returns template object.
@@ -314,7 +390,7 @@
      * Main table directive.
      * @namespace infiniteGrid.Components.infiniteGrid
      */
-    infiniteGrid = function (templateCache, utilsService, dataService) {
+    infiniteGrid = function (http, templateCache, utilsService, dataService) {
         var _linkFunction;
 
         /**
@@ -324,51 +400,8 @@
          */
         _linkFunction = function (scope, element, attr) {
             var _MEMORY,
-                _DATA_OBJ,
+                _SETTINGS,
                 _validateSettings;
-
-
-            var test = dataService.queryLocalData(1, 1, 2, 2, {
-                0: {
-                    columns: {
-                        0: {
-                            value: "James"
-                        },
-                        1: {
-                            value: null
-                        },
-                        2: {
-                            value: null
-                        }
-                    }
-                },
-                1: {
-                    columns: {
-                        0: {
-                            value: "Bruce"
-                        },
-                        1: {
-                            value: null
-                        },
-                        2: {
-                            value: "Chris"
-                        }
-                    }
-                },
-                2: {
-                    columns: {
-                        0: {
-                            value: "Daniel"
-                        },
-                        1: {
-                            value: "Stuart"
-                        },
-                        2: {
-                            value: null
-                        }
-                    }
-                }
-            });
 
             /**
              * ##################################################
@@ -378,7 +411,7 @@
 
             _MEMORY = {};
 
-            _DATA_OBJ = {};
+            _SETTINGS = {};
 
             /**
              * Validate grid settings.
@@ -425,13 +458,50 @@
                     scope.data = utilsService.setupDataSetObj(scope.columns, scope.rows);
 
                     scope.initialised = true;
+
+                    scope.getData(0, 0, scope.columns, scope.rows);
                 }
             };
 
-            scope.getData = function () {
+            scope.getData = function (columnIndex, rowIndex) {
+                var _query;
 
+                _SETTINGS = {
+                    columnIndex: columnIndex,
+                    rowIndex: rowIndex
+                };
+
+                _query = dataService.queryLocalData(columnIndex, rowIndex, scope.columns, scope.rows, _MEMORY);
+
+                scope.data = _query.cached;
+
+                if (_query.empty.length) {
+                    http
+                        .get("/fake-data/data.json")
+                        .success(function (result) {
+                            _MEMORY = dataService.mergeData(_MEMORY, result);
+
+                            scope.getData(columnIndex, rowIndex);
+                        });
+                }
             };
 
+
+            scope.showNextRow = function () {
+                scope.getData(_SETTINGS.columnIndex, _SETTINGS.rowIndex + 1, scope.totalColumns);
+            };
+
+            scope.showPrevRow = function () {
+                scope.getData(_SETTINGS.columnIndex, _SETTINGS.rowIndex - 1, scope.totalColumns);
+            };
+
+            scope.showNextColumn = function () {
+                scope.getData(_SETTINGS.columnIndex + 1, _SETTINGS.rowIndex);
+            };
+
+            scope.showPrevColumn = function () {
+                scope.getData(_SETTINGS.columnIndex - 1, _SETTINGS.rowIndex);
+            };
 
             /**
              * ##################################################
@@ -471,7 +541,7 @@
     };
 
     angular.module("infiniteGrid")
-        .directive("infiniteGrid", ["$templateCache", "utilsService", "dataService", infiniteGrid]);
+        .directive("infiniteGrid", ["$http", "$templateCache", "utilsService", "dataService", infiniteGrid]);
 })();
 
 (function() {
@@ -491,6 +561,11 @@
             "            {{column.value}}\n" +
             "        </div>\n" +
             "    </li>\n" +
-            "</ul>");
+            "</ul>\n" +
+            "\n" +
+            "<button ng-click=\"showPrevRow();\">Show prev row</button>\n" +
+            "<button ng-click=\"showNextRow();\">Show next row</button>\n" +
+            "<button ng-click=\"showPrevColumn();\">Show prev column</button>\n" +
+            "<button ng-click=\"showNextColumn();\">Show next column</button>");
     }]);
 })();

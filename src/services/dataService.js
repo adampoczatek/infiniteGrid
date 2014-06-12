@@ -50,7 +50,7 @@
         }
     };
 
-    dataService = function (utilsService) {
+    dataService = function (http, utilsService) {
         return {
 
             /**
@@ -101,6 +101,8 @@
             /**
              * Queries data from locally stored object.
              *
+             * @method queryLocalData
+             * @memberOf infiniteGrid.Services.dataService
              * @param {Number} startColumn - First column index.
              * @param {Number} startRow - First row index.
              * @param {Number} columnsCount - Amount of columns to be queried.
@@ -108,46 +110,94 @@
              * @param {Object} dataSet - Local data object.
              */
             queryLocalData: function (startColumn, startRow, columnsCount, rowsCount, dataSet) {
-                var result, rowIndex, rows, cachedRow, cachedCell, columnIndex, columns, emptyCell;
+                var _result,
+                    _rowIndex,
+                    _rowCached,
+                    _rowCachedIndex,
+                    _columnIndex,
+                    _columnCached,
+                    _columnCachedIndex,
+                    _emptyColumn;
 
-                result = {
+                // Result object containing cached data and an array of empty cells.
+                _result = {
                     cached: {},
                     empty: []
                 };
 
-                // Loop through cached rows.
-                for (rowIndex = 0, rows = rowsCount; rowIndex < rows; rowIndex++) {
-                    cachedRow = dataSet[startRow + rowIndex];
 
-                    result.cached[rowIndex] = { columns: {} };
+                // Loop through cached rows.
+                for (_rowIndex = 0; _rowIndex < rowsCount; _rowIndex++) {
+
+                    _rowCachedIndex = _rowIndex + startRow;
+
+                    _rowCached = dataSet[_rowCachedIndex];
+
+                    // Create empty row object.
+                    _result.cached[_rowIndex] = utilsService.createRowObj();
 
                     // Loop through cached columns.
-                    for (columnIndex = 0, columns = columnsCount; columnIndex < columns; columnIndex++) {
-                        cachedCell =
-                            cachedRow &&
-                            cachedRow.columns[startColumn + columnIndex];
+                    for (_columnIndex = 0; _columnIndex < columnsCount; _columnIndex++) {
 
-                        if (!cachedCell || !cachedCell.value) {
-                            cachedCell = {
-                                value: null
-                            };
+                        _columnCachedIndex = _columnIndex + startColumn;
 
-                            emptyCell = {};
+                        _columnCached =
+                            _rowCached &&
+                            _rowCached.columns &&
+                            _rowCached.columns[_columnCachedIndex];
 
-                            emptyCell[startRow + rowIndex] = startColumn + columnIndex;
+                        if (!_columnCached || !_columnCached.value) {
 
-                            result.empty.push(emptyCell);
+                            _columnCached = utilsService.createColumnObj();
+
+                            _emptyColumn = {};
+
+                            _emptyColumn[_rowCachedIndex] = _columnCachedIndex;
+
+                            _result.empty.push(_emptyColumn);
                         }
 
-                        result.cached[rowIndex].columns[columnIndex] = cachedCell;
+                        _result.cached[_rowIndex].columns[_columnIndex] = _columnCached;
                     }
                 }
 
-                return result;
+                return _result;
+            },
+
+            /**
+             * Merges new data with cached data.
+             *
+             * @method mergeData
+             * @memberOf infiniteGrid.Services.dataService
+             * @param {Object} cachedData
+             * @param {Object} newData
+             */
+            mergeData: function (cachedData, newData) {
+                var _cachedRow, _cachedColumn;
+
+                utilsService.loopObj(newData, function (item, key) {
+                    _cachedRow = cachedData[key];
+
+                    if (!_cachedRow) {
+                        _cachedRow = cachedData[key] = utilsService.createRowObj();
+                    }
+
+                    utilsService.loopObj(item, function (item, key) {
+                        _cachedColumn = _cachedRow.columns[key];
+
+                        if (!_cachedColumn) {
+                            _cachedColumn = _cachedRow.columns[key] = utilsService.createColumnObj();
+                        }
+
+                        _cachedColumn.value = item.value;
+                    });
+                });
+
+                return cachedData;
             }
         };
     };
 
     angular.module("infiniteGrid")
-        .service("dataService", ["utilsService", dataService]);
+        .service("dataService", ["$http", "utilsService", dataService]);
 })();

@@ -15,6 +15,11 @@
             "            {{column.value}}\n" +
             "        </div>\n" +
             "    </li>\n" +
-            "</ul>");
+            "</ul>\n" +
+            "\n" +
+            "<button ng-click=\"showPrevRow();\">Show prev row</button>\n" +
+            "<button ng-click=\"showNextRow();\">Show next row</button>\n" +
+            "<button ng-click=\"showPrevColumn();\">Show prev column</button>\n" +
+            "<button ng-click=\"showNextColumn();\">Show next column</button>");
     }]);
 })();
