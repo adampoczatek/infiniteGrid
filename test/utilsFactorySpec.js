@@ -1,7 +1,7 @@
 describe("utilitiesService.cloneObject", function () {
     beforeEach(module("infiniteGrid"));
 
-    it("should create copy of an object", inject(function (utilsService) {
+    it("should create copy of an object", inject(function (utilsFactory) {
         var obj,
             cloned;
 
@@ -9,7 +9,7 @@ describe("utilitiesService.cloneObject", function () {
             key: "value"
         };
 
-        cloned = utilsService.cloneObject(obj);
+        cloned = utilsFactory.cloneObject(obj);
 
         expect(obj === cloned).toBe(false);
 
@@ -20,20 +20,20 @@ describe("utilitiesService.cloneObject", function () {
 describe("utilitiesService.setupDataSetObj`", function () {
     beforeEach(module("infiniteGrid"));
 
-    it("should have the right amount of rows", inject(function (utilsService) {
+    it("should have the right amount of rows", inject(function (utilsFactory) {
         var setup, rows;
 
-        setup = utilsService.setupDataSetObj(2, 2);
+        setup = utilsFactory.setupDataSetObj(2, 2);
 
         rows = Object.keys(setup);
 
         expect(rows.length).toBe(2);
     }));
 
-    it("should have the right amount of columns in each row", inject(function (utilsService) {
+    it("should have the right amount of columns in each row", inject(function (utilsFactory) {
         var setup, columns1, columns2;
 
-        setup = utilsService.setupDataSetObj(4, 2);
+        setup = utilsFactory.setupDataSetObj(4, 2);
 
         columns1 = Object.keys(setup[0].columns);
 

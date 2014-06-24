@@ -1,76 +1,33 @@
 (function () {
     "use strict";
 
-    var dataService;
+    var dataFactory;
 
     /**
      * Data service is used to manipulate with data.
-     * @namespace infiniteGrid.Services.dataService
+     * @namespace infiniteGrid.Factories.dataFactory
      */
-
-    var dataSet = {
-        0: {
-            columns: {
-                0: {
-                    value: "James"
-                },
-                1: {
-                    value: null
-                },
-                2: {
-                    value: null
-                }
-            }
-        },
-        1: {
-            columns: {
-                0: {
-                    value: "Bruce"
-                },
-                1: {
-                    value: null
-                },
-                2: {
-                    value: "Chris"
-                }
-            }
-        },
-        2: {
-            columns: {
-                0: {
-                    value: "Daniel"
-                },
-                1: {
-                    value: "Stuart"
-                },
-                2: {
-                    value: null
-                }
-            }
-        }
-    };
-
-    dataService = function (http, utilsService) {
+    dataFactory = function (http, utilsFactory) {
         return {
 
             /**
              * Sets up data object.
              *
              * @method setup
-             * @memberOf infiniteGrid.Services.dataService
+             * @memberOf infiniteGrid.Factories.dataFactory
              * @param totalColumns
              * @param totalRows
              * @returns {Object}
              */
             setup: function (totalColumns, totalRows) {
-                return utilsService.setupDataSetObj(totalColumns, totalRows);
+                return utilsFactory.setupDataSetObj(totalColumns, totalRows);
             },
 
             /**
              * Loops through data object and returns an array of empty cells.
              *
              * @method getEmptyCells
-             * @memberOf infiniteGrid.Services.dataService
+             * @memberOf infiniteGrid.Factories.dataFactory
              * @param {Object} dataSet
              * @returns {Array}
              */
@@ -78,10 +35,10 @@
                 var result = [];
 
                 // Loop through rows.
-                utilsService.loopObj(dataSet, function (rowItem, rowItemKey) {
+                utilsFactory.loopObj(dataSet, function (rowItem, rowItemKey) {
 
                     // Loop through columns
-                    utilsService.loopObj(rowItem.columns, function (cellItem, cellItemKey) {
+                    utilsFactory.loopObj(rowItem.columns, function (cellItem, cellItemKey) {
                         var item;
 
                         // If cell doesn't have any data add it to the `results` array.
@@ -102,7 +59,7 @@
              * Queries data from locally stored object.
              *
              * @method queryLocalData
-             * @memberOf infiniteGrid.Services.dataService
+             * @memberOf infiniteGrid.Factories.dataFactory
              * @param {Number} startColumn - First column index.
              * @param {Number} startRow - First row index.
              * @param {Number} columnsCount - Amount of columns to be queried.
@@ -134,7 +91,7 @@
                     _rowCached = dataSet[_rowCachedIndex];
 
                     // Create empty row object.
-                    _result.cached[_rowIndex] = utilsService.createRowObj();
+                    _result.cached[_rowIndex] = utilsFactory.createRowObj();
 
                     // Loop through cached columns.
                     for (_columnIndex = 0; _columnIndex < columnsCount; _columnIndex++) {
@@ -148,7 +105,7 @@
 
                         if (!_columnCached || !_columnCached.value) {
 
-                            _columnCached = utilsService.createColumnObj();
+                            _columnCached = utilsFactory.createColumnObj();
 
                             _emptyColumn = {};
 
@@ -168,25 +125,25 @@
              * Merges new data with cached data.
              *
              * @method mergeData
-             * @memberOf infiniteGrid.Services.dataService
+             * @memberOf infiniteGrid.Factories.dataFactory
              * @param {Object} cachedData
              * @param {Object} newData
              */
             mergeData: function (cachedData, newData) {
                 var _cachedRow, _cachedColumn;
 
-                utilsService.loopObj(newData, function (item, key) {
+                utilsFactory.loopObj(newData, function (item, key) {
                     _cachedRow = cachedData[key];
 
                     if (!_cachedRow) {
-                        _cachedRow = cachedData[key] = utilsService.createRowObj();
+                        _cachedRow = cachedData[key] = utilsFactory.createRowObj();
                     }
 
-                    utilsService.loopObj(item, function (item, key) {
+                    utilsFactory.loopObj(item, function (item, key) {
                         _cachedColumn = _cachedRow.columns[key];
 
                         if (!_cachedColumn) {
-                            _cachedColumn = _cachedRow.columns[key] = utilsService.createColumnObj();
+                            _cachedColumn = _cachedRow.columns[key] = utilsFactory.createColumnObj();
                         }
 
                         _cachedColumn.value = item.value;
@@ -199,5 +156,5 @@
     };
 
     angular.module("infiniteGrid")
-        .service("dataService", ["$http", "utilsService", dataService]);
+        .service("dataFactory", ["$http", "utilsFactory", "CellModel", dataFactory]);
 })();

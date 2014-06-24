@@ -1,14 +1,13 @@
 (function () {
     "use strict";
 
-    var utilsService;
+    var utilsFactory;
 
     /**
      * Utilities service contains commonly used methods.
-     * @namespace infiniteGrid.Services.utilsService
+     * @namespace infiniteGrid.Factories.utilsFactory
      */
-
-    utilsService = function () {
+    utilsFactory = function (Cell) {
         var _setupColumns,
             _setupRows,
             _cloneObj;
@@ -22,6 +21,7 @@
          *
          * @method _setupColumns
          * @param {Number} columns - Number of columns in the grid.
+         * @param {*} columnValue - Value that goes into the column.
          * @returns {Object}
          * @private
          */
@@ -66,7 +66,7 @@
              * Creates generic row object.
              *
              * @method createRowObj
-             * @memberOf infiniteGrid.Services.utilsService
+             * @memberOf infiniteGrid.Factories.utilsFactory
              * @returns {Object}
              */
             createRowObj: function () {
@@ -79,20 +79,18 @@
              * Creates generic column object.
              *
              * @method createColumnObj
-             * @memberOf infiniteGrid.Services.utilsService
+             * @memberOf infiniteGrid.Factories.utilsFactory
              * @returns {Object}
              */
             createColumnObj: function () {
-                return {
-                    value: null
-                };
+                return new Cell();
             },
 
             /**
              * Sets ups data set object.
              *
              * @method setupDataSetObj
-             * @memberOf infiniteGrid.Services.utilsService
+             * @memberOf infiniteGrid.Factories.utilsFactory
              * @param {Number} columns - Number of columns in the grid.
              * @param {Number} rows - Number of rows in the grid.
              * @returns {Object} - Returns template object.
@@ -114,7 +112,7 @@
              * Creates a clone of an object.
              *
              * @method cloneObject
-             * @memberOf infiniteGrid.Services.utilsService
+             * @memberOf infiniteGrid.Factories.utilsFactory
              * @param {Object} obj - Object that will be cloned.
              * @returns {Object} - Copy of the `obj` parameter.
              */
@@ -141,5 +139,5 @@
     };
 
     angular.module("infiniteGrid")
-        .service("utilsService", [utilsService]);
+        .service("utilsFactory", ["CellModel", utilsFactory]);
 })();

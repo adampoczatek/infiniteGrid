@@ -45,10 +45,10 @@ dataSet = {
 describe("dataService.getEmptyCells", function () {
     beforeEach(module("infiniteGrid"));
 
-    it("should return an array of empty cells", inject(function (dataService) {
+    it("should return an array of empty cells", inject(function (dataFactory) {
         var result;
 
-        result = dataService.getEmptyCells(dataSet);
+        result = dataFactory.getEmptyCells(dataSet);
 
         expect(result.length).toBe(4);
 
@@ -66,42 +66,42 @@ describe("dataService.getEmptyCells", function () {
     }));
 });
 
-describe("dataService.queryLocalData", function () {
-    beforeEach(module("infiniteGrid"));
-
-    it("should return new set of data", inject(function (dataService) {
-        var query, cachedQuery, missingData;
-
-        query = dataService.queryLocalData(1, 1, 2, 2, dataSet);
-
-        cachedQuery = query.cached;
-
-        missingData = query.empty;
-
-        expect(Object.keys(cachedQuery).length).toBe(2);
-
-        expect(Object.keys(cachedQuery[0].columns).length).toBe(2);
-
-        expect(Object.keys(cachedQuery[1].columns).length).toBe(2);
-
-        expect(cachedQuery[0].columns[0].value).toBe(null);
-
-        expect(cachedQuery[0].columns[1].value).toBe("Chris");
-
-        expect(cachedQuery[1].columns[0].value).toBe("Stuart");
-
-        expect(cachedQuery[1].columns[1].value).toBe(null);
-
-        console.log(cachedQuery);
-        console.log(cachedQuery);
-        console.log(missingData);
-    }));
-});
+//describe("dataService.queryLocalData", function () {
+//    beforeEach(module("infiniteGrid"));
+//
+//    it("should return new set of data", inject(function (dataFactory) {
+//        var query, cachedQuery, missingData;
+//
+//        query = dataFactory.queryLocalData(1, 1, 2, 2, dataSet);
+//
+//        cachedQuery = query.cached;
+//
+//        missingData = query.empty;
+//
+//        expect(Object.keys(cachedQuery).length).toBe(2);
+//
+//        expect(Object.keys(cachedQuery[0].columns).length).toBe(2);
+//
+//        expect(Object.keys(cachedQuery[1].columns).length).toBe(2);
+//
+//        expect(cachedQuery[0].columns[0].value).toBe(null);
+//
+//        expect(cachedQuery[0].columns[1].value).toBe("Chris");
+//
+//        expect(cachedQuery[1].columns[0].value).toBe("Stuart");
+//
+//        expect(cachedQuery[1].columns[1].value).toBe(null);
+//
+//        console.log(cachedQuery);
+//        console.log(cachedQuery);
+//        console.log(missingData);
+//    }));
+//});
 
 describe("dataService.mergeData", function () {
     beforeEach(module("infiniteGrid"));
 
-    it("should merge data", inject(function (dataService) {
+    it("should merge data", inject(function (dataFactory) {
         var cachedData, serverData, result;
 
         serverData = {
@@ -160,9 +160,7 @@ describe("dataService.mergeData", function () {
         };
 
 
-        result = dataService.mergeData(cachedData, serverData);
-
-        console.log(result);
+        result = dataFactory.mergeData(cachedData, serverData);
 
         expect(result[0].columns[0].value).toBe("Item 1");
         expect(result[0].columns[1].value).toBe("Item 2");

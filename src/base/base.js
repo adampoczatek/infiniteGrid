@@ -12,6 +12,16 @@
      */
 
     /**
+     * Contains all infiniteGrid services.
+     * @namespace infiniteGrid.Factories
+     */
+
+    /**
+     * Contains all infiniteGrid services.
+     * @namespace infiniteGrid.Models
+     */
+
+    /**
      * Contains all infiniteGrid filters.
      * @namespace infiniteGrid.Filters
      */

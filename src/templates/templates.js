@@ -5,14 +5,14 @@
         $templateCache.put("templates/grid.tpl.html",
             "<ul class=\"infinite-grid\">\n" +
             "    <li class=\"infinite-grid__row\"\n" +
-            "        ng-class=\"{ 'infinite-grid__row--freeze': row.freeze }\"\n" +
+            "        ng-class=\"{ 'infinite-grid__row--freeze': row.isFrozen() }\"\n" +
             "        ng-repeat=\"row in data\">\n" +
             "\n" +
             "        <div class=\"infinite-grid__column\"\n" +
-            "             ng-class=\"{ 'infinite-grid__column--freeze': column.freeze }\"\n" +
-            "             ng-repeat=\"column in row.columns\">\n" +
+            "             ng-class=\"{ 'infinite-grid__column--freeze': cell.isFrozen() }\"\n" +
+            "             ng-repeat=\"cell in row.cells\">\n" +
             "\n" +
-            "            {{column.value}}\n" +
+            "            {{cell.render()}}\n" +
             "        </div>\n" +
             "    </li>\n" +
             "</ul>\n" +

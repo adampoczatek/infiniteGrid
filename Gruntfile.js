@@ -11,11 +11,13 @@ module.exports = function (grunt) {
             "./src/base/base.js",
             "./src/filters/*.js",
             "./src/services/*.js",
+            "./src/factories/*.js",
+            "./src/models/*.js",
             "./src/directives/*.js",
             "./src/templates/*.js"
         ],
 
-        clean:   require("./build_tasks/clean/task.js"),
+        clean:   require("./build_tasks/clean/clean-task.js"),
         concat:  require("./build_tasks/concat/concat-task.js"),
         connect: require("./build_tasks/connect/connect-task.js"),
         copy:    require("./build_tasks/copy/copy-task.js"),
@@ -27,11 +29,20 @@ module.exports = function (grunt) {
         watch:   require("./build_tasks/watch/watch-task.js")
     });
 
-    grunt.registerTask("start", ["connect", "watch"]);
+    grunt.registerTask("start", [
+        "build",
+        "connect",
+        "watch"
+    ]);
 
-    grunt.registerTask("compile-templates", ["html2js", "indent", "concat:templates"]);
+    grunt.registerTask("compile-templates", [
+        "html2js",
+        "indent",
+        "concat:templates"
+    ]);
 
     grunt.registerTask("build", [
+        "clean:documentation",
         "compile-templates",
         "concat:dev",
         "jshint",

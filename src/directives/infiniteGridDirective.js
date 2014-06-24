@@ -5,9 +5,9 @@
 
     /**
      * Main table directive.
-     * @namespace infiniteGrid.Components.infiniteGrid
+     * @namespace infiniteGrid.Components.infiniteGridDirective
      */
-    infiniteGrid = function (http, templateCache, utilsService, dataService) {
+    infiniteGrid = function (http, templateCache, utilsFactory, dataFactory, Cache, View) {
         var _linkFunction;
 
         /**
@@ -16,8 +16,9 @@
          * @private
          */
         _linkFunction = function (scope, element, attr) {
-            var _MEMORY,
-                _SETTINGS,
+            var _memory,
+                _data,
+                _settings,
                 _validateSettings;
 
             /**
@@ -26,9 +27,9 @@
              * ##################################################
              */
 
-            _MEMORY = {};
+            _memory = new Cache(scope.columns, scope.rows);
 
-            _SETTINGS = {};
+            _data = new View();
 
             /**
              * Validate grid settings.
@@ -72,52 +73,56 @@
                 valid = _validateSettings(scope.columns, scope.totalColumns, scope.rows, scope.totalRows);
 
                 if (valid) {
-                    scope.data = utilsService.setupDataSetObj(scope.columns, scope.rows);
-
                     scope.initialised = true;
 
-                    scope.getData(0, 0, scope.columns, scope.rows);
+                    scope.getData(0, 0);
                 }
             };
 
-            scope.getData = function (columnIndex, rowIndex) {
-                var _query;
+            scope.updateView = function (data) {
+                scope.data = data;
+            };
 
-                _SETTINGS = {
+            scope.getData = function (columnIndex, rowIndex) {
+                var query;
+
+                _settings = {
                     columnIndex: columnIndex,
                     rowIndex: rowIndex
                 };
 
-                _query = dataService.queryLocalData(columnIndex, rowIndex, scope.columns, scope.rows, _MEMORY);
+                query = _memory.query(columnIndex, rowIndex);
 
-                scope.data = _query.cached;
+                scope.updateView(query.data);
 
-                if (_query.empty.length) {
+                if (query.empty.length) {
+
+                    window.console.log("`scope.getData`: Querying empty cells.", query.empty);
+
                     http
-                        .get("/fake-data/data.json")
+                        .get("/fake-data/data-simple.json")
                         .success(function (result) {
-                            _MEMORY = dataService.mergeData(_MEMORY, result);
+                            _memory.insertData(result);
 
                             scope.getData(columnIndex, rowIndex);
                         });
                 }
             };
 
-
             scope.showNextRow = function () {
-                scope.getData(_SETTINGS.columnIndex, _SETTINGS.rowIndex + 1, scope.totalColumns);
+                scope.getData(_settings.columnIndex, _settings.rowIndex + 1, scope.totalColumns);
             };
 
             scope.showPrevRow = function () {
-                scope.getData(_SETTINGS.columnIndex, _SETTINGS.rowIndex - 1, scope.totalColumns);
+                scope.getData(_settings.columnIndex, _settings.rowIndex - 1, scope.totalColumns);
             };
 
             scope.showNextColumn = function () {
-                scope.getData(_SETTINGS.columnIndex + 1, _SETTINGS.rowIndex);
+                scope.getData(_settings.columnIndex + 1, _settings.rowIndex);
             };
 
             scope.showPrevColumn = function () {
-                scope.getData(_SETTINGS.columnIndex - 1, _SETTINGS.rowIndex);
+                scope.getData(_settings.columnIndex - 1, _settings.rowIndex);
             };
 
             /**
@@ -158,5 +163,5 @@
     };
 
     angular.module("infiniteGrid")
-        .directive("infiniteGrid", ["$http", "$templateCache", "utilsService", "dataService", infiniteGrid]);
+        .directive("infiniteGrid", ["$http", "$templateCache", "utilsFactory", "dataFactory", "CacheModel", "ViewModel", infiniteGrid]);
 })();
